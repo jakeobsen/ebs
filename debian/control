@@ -1,0 +1,12 @@
+Source: ebs
+Maintainer: Morten Jakobsen <mj@gnu.dk>
+Section: misc
+Priority: optional
+Standards-Version: 3.9.2
+Build-Depends: debhelper (>= 9)
+
+Package: ebs
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: EBS (External Backup Scripts) makes it easy to create external
+  backups of data.

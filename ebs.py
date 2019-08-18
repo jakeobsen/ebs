@@ -122,7 +122,7 @@ class Main:
                     # Unmount backup partition
                     logging.info("Syncing disks prior to umount")
                     subprocess.run(["/bin/sync"], stdout=subprocess.PIPE)
-    
+
                     # Unmount backup partition
                     logging.info("Unmounting disk from {}".format(self.config['BACKUP']['mount_path']))
                     subprocess.run(["/bin/umount", self.config['BACKUP']['mount_path']], stdout=subprocess.PIPE)
@@ -141,7 +141,7 @@ class Main:
         else:
             logging.info("Backup process completed with returncode: {}.".format(rsync.returncode))
 
-    def getLastBackup(self):    
+    def getLastBackup(self):
         """ Try and figure out the last backup made """
         dirContents = os.listdir(self.config['BACKUP']['rsync_source'])
         logging.debug("Checking folders in: {}".format(self.config['BACKUP']['rsync_source']))
