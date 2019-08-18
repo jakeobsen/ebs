@@ -6,7 +6,7 @@ Standards-Version: 3.9.2
 Build-Depends: debhelper (>= 9)
 
 Package: ebs
-Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Architecture: all
+Depends: rsync, ${misc:Depends}
 Description: EBS (External Backup Scripts) makes it easy to create external
   backups of data.
