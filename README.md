@@ -8,11 +8,11 @@ The purpose of this script is to make it easy to handle external backups in a
 way that only require the external disk to be swapped.
 
 ## Example
-Dirvish is used for backups, and stores vaults in /mnt/backup/dirvish/
+Dirvish is used for backups, and stores vaults in `/mnt/backup/dirvish/`
 
-The external disk is mounted in /mnt/externalbackup/
+The external disk is mounted in `/mnt/externalbackup/`
 
-The desination folder is /mnt/externalbackup/dirvish/
+The desination folder is `/mnt/externalbackup/dirvish/`
 
 A config file would look like:
 
@@ -31,7 +31,7 @@ When EBS is run, it will loop through the specified partitions and look for
 them in the systems partition id table. When a valid parition is found, it
 will be mounted into the folder /mnt/externalbackup/
 
-Then rsync is started to sync /mnt/backup/dirvish/ into /mnt/externalbackup/dirvish/
+Then rsync is started to sync `/mnt/backup/dirvish/` into `/mnt/externalbackup/dirvish/`
 
 When rsync is done, the disk is synced and umounted. EBS then proceeds to
 the next id in the list, if it's present the whole process starts again.
