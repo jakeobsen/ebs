@@ -6,16 +6,39 @@
 # -*- coding: utf-8 -*-
 
 """
-This program is used together with the dirvish backup solution.
-It is intended to sync the internal backup partition with an
-external backup disk.
+EBS was designed to syncronise internal backups to external disks in an
+automated way. In ebs.ini the sync source, destination and mountpath is
+specified along with a set of whitelisted partion UUID's.
 
-You can sync x number of backups to the disk, or the whole archive
-depending on the configuration.
+The purpose of this script is to make it easy to handle external backups in a
+way that only require the external disk to be swapped.
 
-The system keeps an internal list of whitelisted partition ID's that
-it uses to determine which partition it should mount in the external
-backup location, and then sync.
+Example:
+    Dirvish is used for backups, and stores vaults in /mnt/backup/dirvish/
+    The external disk is mounted in /mnt/externalbackup/
+    The desination folder is /mnt/externalbackup/dirvish/
+
+    A config file would look like:
+
+    [DEFAULT]
+    enabled = true
+
+    [BACKUP]
+    blkid = 1de6a920-29d8-4901-af96-c611e01fb8c5, 614926a2-7b19-404b-8249-861edf216b3e
+    rsync_source = /mnt/backup/dirvish/
+    rsync_destination = /mnt/externalbackup/dirvish/
+    mount_path = /mnt/externalbackup/
+
+    When EBS is run, it will loop through the specified partitions and look for
+    them in the systems partition id table. When a valid parition is found, it
+    will be mounted into the folder /mnt/externalbackup/
+
+    Then rsync is started to sync /mnt/backup/dirvish/ into /mnt/externalbackup/dirvish/
+
+    When rsync is done, the disk is synced and umounted. EBS then proceeds to
+    the next id in the list, if it's present the whole process starts again.
+    This way multiple external disks can be synced at once. E.g. to make two
+    copies of the internal backup disk.
 """
 
 import configparser
@@ -25,24 +48,25 @@ import logging
 import argparse
 import time
 
-
-""" Main class for EBS program """
-
-
 class Main:
+    """ Main Class for EBS program """
+
     def __init__(self, configurationFile):
         """ Initialize class """
         self.lockFilePath = '/var/lock/ebs'
         self.configFilename = configurationFile
 
     def setLockFile(self):
+        """ Sets lockfile """
         with open(self.lockFilePath, 'w') as f:
             f.write('ebs')
 
     def deleteLockFile(self):
+        """ Delete's lockfile """
         os.remove(self.lockFilePath)
 
     def checkLockFile(self):
+        """ Check if lockfile exists """
         if os.path.isfile(self.lockFilePath):
             logging.warning("Lockfile found, exiting.")
             return False
@@ -88,9 +112,6 @@ class Main:
         if self.config['DEFAULT']['enabled'] == "true":
             logging.debug("EBS is enabled")
 
-            # Determine what to backup
-            #self.getLastBackup()
-
             # Get list of valid backup ID's
             logging.debug("Trying to get list of valid UUID's")
             uuidList = self.config['BACKUP']['blkid'].split(",")
@@ -133,6 +154,7 @@ class Main:
             logging.warning("EBS is not enabled, please refer to the documentation, and update the configuration file before you continue.")
 
     def backupData(self):
+        """ Backup data from internal backup disk to external disk """
         logging.info("Initiating backup process")
         rsync = subprocess.run(['/usr/bin/rsync','-qrlHptgoD','--delete-before',self.config['BACKUP']['rsync_source'],self.config['BACKUP']['rsync_destination']], stdout=subprocess.PIPE)
         logging.debug(rsync)
