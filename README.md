@@ -29,7 +29,7 @@ mount_path = /mnt/externalbackup/
 
 When EBS is run, it will loop through the specified partitions and look for
 them in the systems partition id table. When a valid parition is found, it
-will be mounted into the folder /mnt/externalbackup/
+will be mounted into the folder `/mnt/externalbackup/`
 
 Then rsync is started to sync `/mnt/backup/dirvish/` into `/mnt/externalbackup/dirvish/`
 
