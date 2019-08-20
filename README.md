@@ -16,7 +16,7 @@ The desination folder is /mnt/externalbackup/dirvish/
 
 A config file would look like:
 
-```
+```config
 [DEFAULT]
 enabled = true
 
