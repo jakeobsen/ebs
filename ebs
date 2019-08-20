@@ -140,7 +140,7 @@ class Main:
                     # Run backup process
                     self.backupData()
 
-                    # Unmount backup partition
+                    # Sync backup partition
                     logging.info("Syncing disks prior to umount")
                     subprocess.run(["/bin/sync"], stdout=subprocess.PIPE)
 
@@ -163,36 +163,11 @@ class Main:
         else:
             logging.info("Backup process completed with returncode: {}.".format(rsync.returncode))
 
-    def getLastBackup(self):
-        """ Try and figure out the last backup made """
-        dirContents = os.listdir(self.config['BACKUP']['rsync_source'])
-        logging.debug("Checking folders in: {}".format(self.config['BACKUP']['rsync_source']))
-        lastChangeTime = 0
-        for entry in dirContents:
-            logging.debug("Checking dir: {}".format(entry))
-            if entry != "dirvish":
-                fullPath = "{}/{}".format(self.config['BACKUP']['rsync_source'], entry)
-                changeTime = int(os.stat(fullPath).st_ctime)
-                isDir = os.path.isdir(fullPath)
-                if isDir == True:
-                    logging.debug("Is a directory")
-                    if changeTime > lastChangeTime:
-                        logging.debug("Found valid path: {} ({})".format(self.config['BACKUP']['rsync_source'], changeTime))
-                        self.lastBackup = fullPath
-                        lastChangeTime = changeTime
-                else:
-                    logging.debug("Is not a directory")
-            else:
-                logging.debug("Invalid folder name")
-        logging.info("Found valid backup source: {}".format(self.lastBackup))
 
-
-"""
-Run EBS if called from command line
-"""
+""" Run EBS if called from command line """
 if __name__ == "__main__":
     # Description
-    parser = argparse.ArgumentParser(description="External Backup Script: copy dirvish backups to external disks")
+    parser = argparse.ArgumentParser(description="External Backup Script: copy backups to external disks")
     # Config
     parser.add_argument('-c', '--config', type=str, help="Configuration File", default="/etc/ebs.ini")
     # Loglevel
@@ -214,6 +189,6 @@ if __name__ == "__main__":
     elif args.loglevel == 5:
         logging.basicConfig(level=logging.CRITICAL)
 
-    # Single instance only
+    # Initiate and run
     ebs = Main(args.config)
     ebs.run()
