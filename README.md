@@ -43,7 +43,7 @@ copies of the internal backup disk.
 You can install EBS on a Debian 10 Buster server by, as root, running this command:
 
 ```bash
-wget -O- https://gitlab.com/jakeobsen/ebs/raw/master/build.sh | sh
+wget -O- https://raw.githubusercontent.com/jakeobsen/ebs/master/build.sh | sh
 ```
 
 If you don't like running random scripts off the internet, you can run the
@@ -53,7 +53,7 @@ commands yourself:
 mkdir /tmp/ebs
 cd /tmp/ebs
 apt install devscripts debhelper git
-git clone https://gitlab.com/jakeobsen/ebs
+git clone https://github.com/jakeobsen/ebs
 cd ebs
 dpkg-buildpackage -us -uc
 dpkg -i ../ebs*.deb
